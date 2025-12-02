@@ -77,25 +77,42 @@ for experimenting with behavioral proxies.
 ```text
 persuadable-defender/
 ├── README.md
+├── CONTRIBUTING.md
 ├── pyproject.toml
+├── requirements.txt
 ├── docs/
 │   ├── architecture.md
-│   ├── research_outline.md
-│   └── prompts.md
+│   ├── architecture_secure.md
+│   ├── ato_and_stig_checklist.md
+│   ├── barriers_reference.md
+│   ├── prompts.md
+│   └── research_outline.md
+├── examples/
+│   └── barriers_example.json
 ├── clcone_lab/
 │   ├── __init__.py
 │   ├── envs.py
-│   └── CLcone_Assays.py
+│   ├── CLcone_Assays.py
+│   └── barrier_tame_assay.py
 ├── malignant_agent/
 │   ├── __init__.py
-│   └── MalignantAgent.py
+│   ├── MalignantAgent.py
+│   └── barrier_adapter.py
 ├── gao_orchestrator/
 │   ├── __init__.py
 │   └── GAO_Orchestrator.py
-└── tests/
-    ├── test_clcone_assays.py
-    ├── test_malignant_agent.py
-    └── test_gao_orchestrator.py
+├── tests/
+│   ├── test_clcone_assays.py
+│   ├── test_malignant_agent.py
+│   ├── test_gao_orchestrator.py
+│   ├── test_barrier_tame_assay.py
+│   ├── test_malignant_barrier_adapter.py
+│   └── test_new_metrics.py
+└── infra/
+    ├── aws/
+    ├── aws-nitro/
+    ├── oci/
+    └── oci-confidential/
 ```
 
 ---
