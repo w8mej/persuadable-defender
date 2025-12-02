@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=67", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "persuadable-defender"
+version = "0.1.0"
+description = "Research scaffolding for Cognitive Light Cone experiments in autonomous security agents."
+authors = [
+  { name = "John Menerick", email = "jobs@haxx.ninja" }
+]
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "gymnasium>=0.29.0",
+  "numpy>=1.24.0"
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=7.0.0"
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["clcone_lab*", "malignant_agent*", "gao_orchestrator*"]

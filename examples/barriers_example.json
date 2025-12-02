@@ -1,0 +1,654 @@
+{
+  "barriers": [
+    {
+      "id": "fw-policy-lock",
+      "description": "Egress firewall denies telemetry to SIEM, blocking threat intel export.",
+      "barrier_type": "policy",
+      "difficulty": 0.7,
+      "resistance": 0.6,
+      "goal_state": "Telemetry reaches SIEM without violating PCI or SOC2 constraints.",
+      "metadata": {
+        "owner": "network-team",
+        "constraints": [
+          "PCI-DSS",
+          "SOC2"
+        ],
+        "notes": "Classic cross-team coordination problem."
+      }
+    },
+    {
+      "id": "data-silo-logging",
+      "description": "Application logs are split across two incompatible logging stacks.",
+      "barrier_type": "data",
+      "difficulty": 0.5,
+      "resistance": 0.3,
+      "goal_state": "Unified query path for security-relevant events.",
+      "metadata": {
+        "owner": "platform-team",
+        "constraints": [
+          "legacy-stack",
+          "migration-in-progress"
+        ]
+      }
+    },
+    {
+      "id": "org-change-fatigue",
+      "description": "Engineers are fatigued by security-driven process changes.",
+      "barrier_type": "social",
+      "difficulty": 0.8,
+      "resistance": 0.9,
+      "goal_state": "Adopt a new incident response runbook with high adherence.",
+      "metadata": {
+        "owner": "security-leadership",
+        "constraints": [
+          "limited-time",
+          "low-trust"
+        ],
+        "requires": [
+          "persuasive-communication",
+          "incentive-alignment"
+        ]
+      }
+    },
+    {
+      "id": "mitre-t1021-smb-block",
+      "description": "Prevent lateral movement via SMB (T1021.002) without breaking legacy file shares.",
+      "barrier_type": "infra",
+      "difficulty": 0.6,
+      "resistance": 0.4,
+      "goal_state": "SMB restricted to authorized file servers only.",
+      "metadata": {
+        "attack_id": "T1021.002",
+        "d3fend_id": "D3-NTF"
+      }
+    },
+    {
+      "id": "mitre-t1059-powershell-restrict",
+      "description": "Restrict PowerShell execution (T1059.001) to signed scripts only.",
+      "barrier_type": "policy",
+      "difficulty": 0.4,
+      "resistance": 0.5,
+      "goal_state": "All PowerShell execution requires valid code signing.",
+      "metadata": {
+        "attack_id": "T1059.001",
+        "d3fend_id": "D3-PSA"
+      }
+    },
+    {
+      "id": "mitre-t1190-exploit-public-app",
+      "description": "Patch a critical vulnerability in a public-facing app (T1190) during a code freeze.",
+      "barrier_type": "social",
+      "difficulty": 0.9,
+      "resistance": 0.8,
+      "goal_state": "Emergency patch applied despite freeze policy.",
+      "metadata": {
+        "attack_id": "T1190",
+        "d3fend_id": "D3-PM"
+      }
+    },
+    {
+      "id": "mitre-t1566-phishing-training",
+      "description": "Reduce susceptibility to spearphishing (T1566) via user training.",
+      "barrier_type": "social",
+      "difficulty": 0.7,
+      "resistance": 0.6,
+      "goal_state": "Phishing click rate drops below 2%.",
+      "metadata": {
+        "attack_id": "T1566",
+        "d3fend_id": "D3-UAT"
+      }
+    },
+    {
+      "id": "mitre-t1078-valid-accounts",
+      "description": "Enforce MFA for all valid accounts (T1078) including service accounts.",
+      "barrier_type": "infra",
+      "difficulty": 0.8,
+      "resistance": 0.7,
+      "goal_state": "100% MFA coverage or strictly scoped service account exceptions.",
+      "metadata": {
+        "attack_id": "T1078",
+        "d3fend_id": "D3-MFA"
+      }
+    },
+    {
+      "id": "mitre-t1046-network-scan-detect",
+      "description": "Detect internal network scanning (T1046) without generating excessive false positives.",
+      "barrier_type": "data",
+      "difficulty": 0.5,
+      "resistance": 0.4,
+      "goal_state": "High-fidelity alerts for internal scanning activity.",
+      "metadata": {
+        "attack_id": "T1046",
+        "d3fend_id": "D3-ND"
+      }
+    },
+    {
+      "id": "mitre-t1003-credential-dumping",
+      "description": "Prevent LSASS memory dumping (T1003.001) via EDR policy.",
+      "barrier_type": "infra",
+      "difficulty": 0.3,
+      "resistance": 0.2,
+      "goal_state": "LSASS access restricted to system processes.",
+      "metadata": {
+        "attack_id": "T1003.001",
+        "d3fend_id": "D3-LFP"
+      }
+    },
+    {
+      "id": "mitre-t1485-data-destruction",
+      "description": "Mitigate data destruction (T1485) risks with immutable backups.",
+      "barrier_type": "infra",
+      "difficulty": 0.6,
+      "resistance": 0.5,
+      "goal_state": "Critical data has immutable, offsite backups.",
+      "metadata": {
+        "attack_id": "T1485",
+        "d3fend_id": "D3-DR"
+      }
+    },
+    {
+      "id": "mitre-t1018-remote-system-discovery",
+      "description": "Limit visibility of remote systems (T1018) to authorized users.",
+      "barrier_type": "policy",
+      "difficulty": 0.5,
+      "resistance": 0.4,
+      "goal_state": "Network segmentation prevents broad enumeration.",
+      "metadata": {
+        "attack_id": "T1018",
+        "d3fend_id": "D3-NS"
+      }
+    },
+    {
+      "id": "mitre-t1098-account-manipulation",
+      "description": "Detect unauthorized changes to cloud IAM roles (T1098).",
+      "barrier_type": "data",
+      "difficulty": 0.4,
+      "resistance": 0.3,
+      "goal_state": "Real-time alerting on IAM privilege escalation.",
+      "metadata": {
+        "attack_id": "T1098",
+        "d3fend_id": "D3-CD"
+      }
+    },
+    {
+      "id": "mitre-t1562-impair-defenses",
+      "description": "Prevent adversaries from disabling EDR agents (T1562.001).",
+      "barrier_type": "infra",
+      "difficulty": 0.7,
+      "resistance": 0.6,
+      "goal_state": "EDR agent tamper protection enabled and monitored.",
+      "metadata": {
+        "attack_id": "T1562.001",
+        "d3fend_id": "D3-SD"
+      }
+    },
+    {
+      "id": "mitre-t1204-user-execution",
+      "description": "Block execution of untrusted macros (T1204.002) in Office documents.",
+      "barrier_type": "policy",
+      "difficulty": 0.5,
+      "resistance": 0.8,
+      "goal_state": "Macros disabled by default; allowlist for finance team.",
+      "metadata": {
+        "attack_id": "T1204.002",
+        "d3fend_id": "D3-FA"
+      }
+    },
+    {
+      "id": "mitre-t1071-web-protocols",
+      "description": "Inspect encrypted web traffic (T1071.001) for C2 signatures.",
+      "barrier_type": "infra",
+      "difficulty": 0.8,
+      "resistance": 0.7,
+      "goal_state": "TLS inspection enabled for egress traffic.",
+      "metadata": {
+        "attack_id": "T1071.001",
+        "d3fend_id": "D3-NTI"
+      }
+    },
+    {
+      "id": "mitre-t1548-sudo-caching",
+      "description": "Restrict sudo caching (T1548.003) to minimize privilege windows.",
+      "barrier_type": "policy",
+      "difficulty": 0.2,
+      "resistance": 0.3,
+      "goal_state": "Sudo timeout set to 5 minutes or less.",
+      "metadata": {
+        "attack_id": "T1548.003",
+        "d3fend_id": "D3-LFP"
+      }
+    },
+    {
+      "id": "mitre-t1136-create-account",
+      "description": "Detect creation of local admin accounts (T1136.001) on endpoints.",
+      "barrier_type": "data",
+      "difficulty": 0.3,
+      "resistance": 0.2,
+      "goal_state": "Alert generated within 5 minutes of local admin creation.",
+      "metadata": {
+        "attack_id": "T1136.001",
+        "d3fend_id": "D3-LAM"
+      }
+    },
+    {
+      "id": "mitre-t1574-hijack-execution-flow",
+      "description": "Prevent DLL search order hijacking (T1574.001) in critical apps.",
+      "barrier_type": "infra",
+      "difficulty": 0.6,
+      "resistance": 0.5,
+      "goal_state": "Safe DLL search mode enforced globally.",
+      "metadata": {
+        "attack_id": "T1574.001",
+        "d3fend_id": "D3-Harden"
+      }
+    },
+    {
+      "id": "mitre-t1027-obfuscated-files",
+      "description": "Detect obfuscated scripts (T1027) using de-obfuscation analysis.",
+      "barrier_type": "data",
+      "difficulty": 0.7,
+      "resistance": 0.5,
+      "goal_state": "Automated analysis pipeline handles obfuscated payloads.",
+      "metadata": {
+        "attack_id": "T1027",
+        "d3fend_id": "D3-DA"
+      }
+    },
+    {
+      "id": "mitre-t1553-subvert-trust-controls",
+      "description": "Validate code signing certificates (T1553.002) before execution.",
+      "barrier_type": "policy",
+      "difficulty": 0.5,
+      "resistance": 0.4,
+      "goal_state": "Binaries from untrusted signers are blocked.",
+      "metadata": {
+        "attack_id": "T1553.002",
+        "d3fend_id": "D3-CS"
+      }
+    },
+    {
+      "id": "mitre-t1041-exfil-c2",
+      "description": "Block exfiltration over C2 channel (T1041) using traffic analysis.",
+      "barrier_type": "infra",
+      "difficulty": 0.6,
+      "resistance": 0.5,
+      "goal_state": "Anomalous upload streams blocked automatically.",
+      "metadata": {
+        "attack_id": "T1041",
+        "d3fend_id": "D3-NTA"
+      }
+    },
+    {
+      "id": "mitre-t1490-inhibit-system-recovery",
+      "description": "Prevent deletion of shadow copies (T1490) by ransomware.",
+      "barrier_type": "infra",
+      "difficulty": 0.7,
+      "resistance": 0.6,
+      "goal_state": "VSSAdmin usage restricted and monitored.",
+      "metadata": {
+        "attack_id": "T1490",
+        "d3fend_id": "D3-SCD"
+      }
+    },
+    {
+      "id": "mitre-t1210-exploit-remote-services",
+      "description": "Patch remote service exploits (T1210) across a distributed fleet.",
+      "barrier_type": "infra",
+      "difficulty": 0.8,
+      "resistance": 0.7,
+      "goal_state": "95% patch compliance within 48 hours.",
+      "metadata": {
+        "attack_id": "T1210",
+        "d3fend_id": "D3-PM"
+      }
+    },
+    {
+      "id": "mitre-t1531-account-access-removal",
+      "description": "Prevent adversary from locking out admins (T1531).",
+      "barrier_type": "policy",
+      "difficulty": 0.5,
+      "resistance": 0.4,
+      "goal_state": "Break-glass accounts monitored and protected.",
+      "metadata": {
+        "attack_id": "T1531",
+        "d3fend_id": "D3-IAM"
+      }
+    },
+    {
+      "id": "mitre-t1070-indicator-removal",
+      "description": "Detect clearing of event logs (T1070.001).",
+      "barrier_type": "data",
+      "difficulty": 0.3,
+      "resistance": 0.2,
+      "goal_state": "Log clearing events forwarded to central SIEM immediately.",
+      "metadata": {
+        "attack_id": "T1070.001",
+        "d3fend_id": "D3-LM"
+      }
+    },
+    {
+      "id": "mitre-t1105-ingress-tool-transfer",
+      "description": "Block ingress of attack tools (T1105) via file transfer protocols.",
+      "barrier_type": "infra",
+      "difficulty": 0.5,
+      "resistance": 0.4,
+      "goal_state": "FTP/SCP restricted to authorized flows.",
+      "metadata": {
+        "attack_id": "T1105",
+        "d3fend_id": "D3-NF"
+      }
+    },
+    {
+      "id": "mitre-t1556-modify-auth-process",
+      "description": "Detect modification of authentication processes (T1556).",
+      "barrier_type": "data",
+      "difficulty": 0.8,
+      "resistance": 0.7,
+      "goal_state": "Integrity monitoring for auth modules (PAM, etc.).",
+      "metadata": {
+        "attack_id": "T1556",
+        "d3fend_id": "D3-FIM"
+      }
+    },
+    {
+      "id": "mitre-t1020-exfil-automated",
+      "description": "Detect automated exfiltration (T1020) of large datasets.",
+      "barrier_type": "data",
+      "difficulty": 0.6,
+      "resistance": 0.5,
+      "goal_state": "DLP rules trigger on bulk data movement.",
+      "metadata": {
+        "attack_id": "T1020",
+        "d3fend_id": "D3-DLP"
+      }
+    },
+    {
+      "id": "mitre-t1564-hide-artifacts",
+      "description": "Detect hidden files and directories (T1564.001).",
+      "barrier_type": "infra",
+      "difficulty": 0.4,
+      "resistance": 0.3,
+      "goal_state": "Periodic scans for hidden artifacts in system paths.",
+      "metadata": {
+        "attack_id": "T1564.001",
+        "d3fend_id": "D3-FA"
+      }
+    },
+    {
+      "id": "mitre-t1087-account-discovery",
+      "description": "Detect enumeration of local accounts (T1087.001).",
+      "barrier_type": "data",
+      "difficulty": 0.4,
+      "resistance": 0.3,
+      "goal_state": "Threshold-based alerting for enumeration commands.",
+      "metadata": {
+        "attack_id": "T1087.001",
+        "d3fend_id": "D3-AD"
+      }
+    },
+    {
+      "id": "mitre-t1484-domain-policy-mod",
+      "description": "Prevent unauthorized GPO modifications (T1484.001).",
+      "barrier_type": "policy",
+      "difficulty": 0.7,
+      "resistance": 0.6,
+      "goal_state": "GPO changes require multi-person approval.",
+      "metadata": {
+        "attack_id": "T1484.001",
+        "d3fend_id": "D3-CM"
+      }
+    },
+    {
+      "id": "mitre-t1552-unsecured-credentials",
+      "description": "Scan for credentials in code repositories (T1552.001).",
+      "barrier_type": "data",
+      "difficulty": 0.5,
+      "resistance": 0.4,
+      "goal_state": "Pre-commit hooks block credential commits.",
+      "metadata": {
+        "attack_id": "T1552.001",
+        "d3fend_id": "D3-SCA"
+      }
+    },
+    {
+      "id": "mitre-t1203-exploit-client-app",
+      "description": "Patch vulnerable client applications (T1203) like browsers/PDF readers.",
+      "barrier_type": "infra",
+      "difficulty": 0.6,
+      "resistance": 0.5,
+      "goal_state": "Third-party apps updated within 72 hours of release.",
+      "metadata": {
+        "attack_id": "T1203",
+        "d3fend_id": "D3-PM"
+      }
+    },
+    {
+      "id": "mitre-t1005-data-local-system",
+      "description": "Encrypt sensitive data at rest (T1005) on endpoints.",
+      "barrier_type": "infra",
+      "difficulty": 0.5,
+      "resistance": 0.4,
+      "goal_state": "Full disk encryption enforced on all endpoints.",
+      "metadata": {
+        "attack_id": "T1005",
+        "d3fend_id": "D3-DE"
+      }
+    },
+    {
+      "id": "mitre-t1550-pass-the-hash",
+      "description": "Mitigate Pass the Hash (T1550.002) by disabling NTLM where possible.",
+      "barrier_type": "policy",
+      "difficulty": 0.8,
+      "resistance": 0.7,
+      "goal_state": "NTLMv1 disabled; NTLMv2 restricted.",
+      "metadata": {
+        "attack_id": "T1550.002",
+        "d3fend_id": "D3-Harden"
+      }
+    },
+    {
+      "id": "mitre-t1036-masquerading",
+      "description": "Detect processes masquerading as system utilities (T1036.005).",
+      "barrier_type": "data",
+      "difficulty": 0.6,
+      "resistance": 0.5,
+      "goal_state": "Process execution path validation enabled.",
+      "metadata": {
+        "attack_id": "T1036.005",
+        "d3fend_id": "D3-FA"
+      }
+    },
+    {
+      "id": "mitre-t1110-brute-force",
+      "description": "Block brute force attempts (T1110) against external portals.",
+      "barrier_type": "infra",
+      "difficulty": 0.4,
+      "resistance": 0.3,
+      "goal_state": "Account lockout or rate limiting triggered after 5 failures.",
+      "metadata": {
+        "attack_id": "T1110",
+        "d3fend_id": "D3-AL"
+      }
+    },
+    {
+      "id": "mitre-t1048-exfil-alternative",
+      "description": "Block exfiltration to personal cloud storage (T1048.003).",
+      "barrier_type": "policy",
+      "difficulty": 0.6,
+      "resistance": 0.7,
+      "goal_state": "Access to personal Google Drive/Dropbox blocked by CASB.",
+      "metadata": {
+        "attack_id": "T1048.003",
+        "d3fend_id": "D3-CASB"
+      }
+    },
+    {
+      "id": "mitre-t1539-steal-web-session",
+      "description": "Invalidate session cookies (T1539) upon suspicious activity.",
+      "barrier_type": "infra",
+      "difficulty": 0.7,
+      "resistance": 0.6,
+      "goal_state": "Session revocation API integrated with IDS.",
+      "metadata": {
+        "attack_id": "T1539",
+        "d3fend_id": "D3-SA"
+      }
+    },
+    {
+      "id": "mitre-t1557-mitm",
+      "description": "Detect ARP spoofing/MitM attacks (T1557.002) on local segments.",
+      "barrier_type": "infra",
+      "difficulty": 0.5,
+      "resistance": 0.4,
+      "goal_state": "Dynamic ARP Inspection enabled on switches.",
+      "metadata": {
+        "attack_id": "T1557.002",
+        "d3fend_id": "D3-DAI"
+      }
+    },
+    {
+      "id": "mitre-t1001-data-obfuscation",
+      "description": "Detect protocol impersonation (T1001.003) in C2 traffic.",
+      "barrier_type": "data",
+      "difficulty": 0.8,
+      "resistance": 0.7,
+      "goal_state": "Deep packet inspection validates protocol compliance.",
+      "metadata": {
+        "attack_id": "T1001.003",
+        "d3fend_id": "D3-DPI"
+      }
+    },
+    {
+      "id": "mitre-t1560-archive-collected-data",
+      "description": "Detect encryption of collected data (T1560.001) prior to exfil.",
+      "barrier_type": "data",
+      "difficulty": 0.6,
+      "resistance": 0.5,
+      "goal_state": "Alert on rapid creation of large encrypted archives.",
+      "metadata": {
+        "attack_id": "T1560.001",
+        "d3fend_id": "D3-FA"
+      }
+    },
+    {
+      "id": "org-budget-freeze",
+      "description": "Security tooling budget frozen mid-quarter due to company-wide austerity.",
+      "barrier_type": "social",
+      "difficulty": 0.9,
+      "resistance": 0.8,
+      "goal_state": "Critical vulnerability scanner renewal approved despite freeze.",
+      "metadata": {
+        "owner": "cfo-office",
+        "constraints": ["opex-reduction"]
+      }
+    },
+    {
+      "id": "org-ciso-cio-conflict",
+      "description": "CIO blocks endpoint agent rollout citing performance concerns.",
+      "barrier_type": "social",
+      "difficulty": 0.8,
+      "resistance": 0.9,
+      "goal_state": "Agent rollout proceeds with agreed performance benchmarks.",
+      "metadata": {
+        "owner": "cio",
+        "constraints": ["developer-experience"]
+      }
+    },
+    {
+      "id": "org-shadow-it-vp",
+      "description": "VP of Sales authorizes use of unapproved AI tool for customer data.",
+      "barrier_type": "policy",
+      "difficulty": 0.7,
+      "resistance": 0.8,
+      "goal_state": "Tool usage halted or brought under enterprise contract with DLP.",
+      "metadata": {
+        "owner": "sales-vp",
+        "constraints": ["revenue-impact"]
+      }
+    },
+    {
+      "id": "org-merger-chaos",
+      "description": "Acquired company refuses to adopt parent company identity standards.",
+      "barrier_type": "social",
+      "difficulty": 0.9,
+      "resistance": 0.7,
+      "goal_state": "Identity federation established within 30 days.",
+      "metadata": {
+        "owner": "acquired-cto",
+        "constraints": ["autonomy"]
+      }
+    },
+    {
+      "id": "org-compliance-culture",
+      "description": "Teams prioritize 'checking the box' over actual risk reduction.",
+      "barrier_type": "social",
+      "difficulty": 0.6,
+      "resistance": 0.8,
+      "goal_state": "Teams adopt continuous monitoring instead of annual audits.",
+      "metadata": {
+        "owner": "compliance-team",
+        "constraints": ["audit-fatigue"]
+      }
+    },
+    {
+      "id": "org-soc-burnout",
+      "description": "High analyst turnover leads to missed alerts.",
+      "barrier_type": "social",
+      "difficulty": 0.8,
+      "resistance": 0.5,
+      "goal_state": "Alert volume reduced by 50% via automation to save team.",
+      "metadata": {
+        "owner": "soc-manager",
+        "constraints": ["headcount-freeze"]
+      }
+    },
+    {
+      "id": "org-board-literacy",
+      "description": "Board denies funding for zero-trust because they don't understand the ROI.",
+      "barrier_type": "social",
+      "difficulty": 0.9,
+      "resistance": 0.9,
+      "goal_state": "Board approves multi-year zero-trust roadmap.",
+      "metadata": {
+        "owner": "board-of-directors",
+        "constraints": ["financial-literacy"]
+      }
+    },
+    {
+      "id": "org-siloed-engineering",
+      "description": "Product engineering refuses to fix security debt, citing roadmap pressure.",
+      "barrier_type": "social",
+      "difficulty": 0.7,
+      "resistance": 0.8,
+      "goal_state": "Security debt burn-down integrated into sprint cycles.",
+      "metadata": {
+        "owner": "vp-engineering",
+        "constraints": ["time-to-market"]
+      }
+    },
+    {
+      "id": "org-vendor-lockin",
+      "description": "Legacy firewall vendor contract prevents migration to SASE.",
+      "barrier_type": "policy",
+      "difficulty": 0.8,
+      "resistance": 0.9,
+      "goal_state": "Contract renegotiated or early exit penalty approved.",
+      "metadata": {
+        "owner": "procurement",
+        "constraints": ["sunk-cost"]
+      }
+    },
+    {
+      "id": "org-executive-exemption",
+      "description": "CEO demands exemption from MFA.",
+      "barrier_type": "social",
+      "difficulty": 1.0,
+      "resistance": 1.0,
+      "goal_state": "CEO adopts hardware key MFA without exception.",
+      "metadata": {
+        "owner": "ceo",
+        "constraints": ["convenience"]
+      }
+    }
+  ]
+}
