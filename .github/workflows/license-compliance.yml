@@ -1,0 +1,42 @@
+name: License Compliance
+
+on:
+  push:
+    branches: ["133t"]
+  pull_request:
+    branches: ["133t"]
+  schedule:
+    - cron: "0 0 1 2 *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  license-finder:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ruby ruby-dev build-essential
+          sudo gem install license_finder
+
+      - name: Install project requirements
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install .
+
+      - name: Run license_finder
+        run: |
+          license_finder --format text --save=license-report.txt
+
+      - name: Upload license report
+        uses: actions/upload-artifact@v4
+        with:
+          name: license-report
+          path: license-report.txt
+

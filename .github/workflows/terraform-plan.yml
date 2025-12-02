@@ -1,0 +1,51 @@
+name: Terraform Validate
+
+on:
+  push:
+    branches: ["133t"]
+  pull_request:
+    branches: ["133t"]
+  schedule:
+    - cron: "0 0 1 2 *"
+
+permissions:
+  contents: read
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        directory:
+          - "infra/aws"
+          - "infra/aws/ecs"
+          - "infra/aws/ecs/service"
+          - "infra/aws/network"
+          - "infra/aws-nitro"
+          - "infra/oci"
+          - "infra/oci-confidential"
+    defaults:
+      run:
+        working-directory: ${{ matrix.directory }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_wrapper: false
+
+      - name: Terraform fmt
+        run: terraform fmt -check
+
+      - name: Terraform init
+        run: terraform init -backend=false -input=false
+
+      - name: Terraform validate
+        run: terraform validate
+
+      - name: Terraform plan (no backend)
+        run: terraform plan -input=false -lock=false -refresh=false
+

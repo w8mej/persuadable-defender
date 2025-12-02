@@ -1,0 +1,26 @@
+name: Bazel and Buildifier (Dummy)
+
+on:
+  push:
+    branches: ["133t"]
+  pull_request:
+    branches: ["133t"]
+
+permissions:
+  contents: read
+
+jobs:
+  bazel-and-buildifier:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Dummy Bazel invocation
+        run: |
+          echo "No Bazel targets defined; passing placeholder check."
+
+      - name: Dummy Buildifier check
+        run: |
+          echo "No BUILD files to format; Buildifier placeholder succeeded."
+

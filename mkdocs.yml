@@ -1,0 +1,18 @@
+site_name: Persuasive Defender Docs
+site_description: Cognitive Light Cone research notes and architecture references.
+repo_url: https://github.com/solidus-ai/PersuasiveDefense
+docs_dir: docs
+nav:
+  - Home: index.md
+  - Architecture:
+      - Secure Architecture: architecture_secure.md
+      - Architecture Notes: architecture.md
+  - Research:
+      - ATO & STIG Checklist: ato_and_stig_checklist.md
+      - Barriers Reference: barriers_reference.md
+      - Prompts: prompts.md
+      - Research Outline: research_outline.md
+      - Automation Workflows: workflows.md
+theme:
+  name: mkdocs
+
