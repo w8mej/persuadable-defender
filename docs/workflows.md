@@ -18,6 +18,10 @@ The repository uses GitHub Actions to guard research code, infrastructure, and d
 12. **Policy Report (`policy-report.yml`)** – generates and uploads `policy_report.md`.
 13. **Release Artifacts (`tag-release.yml`)** – builds wheels/sdists on version tags and uploads them as release artifacts.
 14. **Bazel/Buildifier (`bazel-buildifier.yml`)** – placeholder job to keep Bazel/Buildifier gates green for compliance.
+15. **Blue/Green Deployment (`deploy-bluegreen.yml`)** – rotates traffic between blue and green environments.
+16. **Release Rollback (`rollback-release.yml`)** – reverts to the last known good deployment.
+17. **Progressive Rollout (`progressive-rollout.yml`)** – stages deployment percentages across infrastructure.
+18. **A/B Testing Validation (`ab-testing.yml`)** – exercises variant testing logic before full release.
 
 ## Supply Chain
 
