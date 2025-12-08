@@ -28,7 +28,7 @@ jobs:
           python scripts/generate_policy_report.py
 
       - name: Upload policy artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: policy-report
           path: policy_report.md
